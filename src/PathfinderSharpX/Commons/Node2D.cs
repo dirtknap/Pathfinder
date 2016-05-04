@@ -17,7 +17,7 @@ namespace PathfinderSharpX.Commons
         public float H { get; set; }
 
         //estimated total cost to move
-        public float F { get; set; }
+        public float F { get { return G + H; } }
 
         public Node2D ParentNode
         {
@@ -54,9 +54,9 @@ namespace PathfinderSharpX.Commons
 
         public static float GetTraversalCost(Point location, Point destination)
         {
-            float deltax = destination.X - location.X;
-            float deltay = destination.Y - location.Y;
-            return (float) Math.Sqrt(deltax*deltax + deltay*deltay);
+            float deltaX = destination.X - location.X;
+            float deltaY = destination.Y - location.Y;
+            return (float) Math.Sqrt(deltaX*deltaX + deltaY*deltaY);
         }
     }
 

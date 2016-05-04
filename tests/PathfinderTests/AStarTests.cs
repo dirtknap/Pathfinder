@@ -11,7 +11,6 @@ namespace PathfinderTests
     public class AStarTests
     {
         private bool[,] map;
-        private SearchParameters2D searchParameters2D;
 
         [TestInitialize]
         public void Initialize()
@@ -30,8 +29,6 @@ namespace PathfinderTests
                     map[x, y] = true;
                 }
             }
-
-            searchParameters2D = new SearchParameters2D(new Point(1, 2), new Point(5, 2), map);
         }
 
         private void AddWallWithGap()
@@ -70,9 +67,10 @@ namespace PathfinderTests
         }
 
         [TestMethod]
-        public void Test_WihtoutWall_CanFindPath()
+        public void Test_WithoutWall_CanFindPath()
         {
             var pathfinder = new AStarFinder();
+            var searchParameters2D = new SearchParameters2D(new Point(1, 2), new Point(5, 2), map);
 
             var path = pathfinder.FindPath(searchParameters2D);
 
@@ -82,11 +80,14 @@ namespace PathfinderTests
         }
 
         [TestMethod]
-        public void Test_WithOpenWall_CanFindPath()
+        public void Test_WithOpenWall_CanFindPath_WithDiagonal()
         {
             AddWallWithGap();
 
             var pathfinder = new AStarFinder();
+            var searchParameters2D = new SearchParameters2D(new Point(1, 2), new Point(5, 2), map);
+
+            searchParameters2D.UseDiagonals = true;
 
             var path = pathfinder.FindPath(searchParameters2D);
 
@@ -96,10 +97,27 @@ namespace PathfinderTests
         }
 
         [TestMethod]
+        public void Test_WithOpenWall_CanFindPath_WithoutDiagonal()
+        {
+            AddWallWithGap();
+
+            var searchParameters2D = new SearchParameters2D(new Point(1, 2), new Point(5, 2), map);
+            var pathfinder = new AStarFinder();
+
+            var path = pathfinder.FindPath(searchParameters2D);
+            
+
+            Assert.IsNotNull(path);
+            Assert.IsTrue(path.Any());
+            Assert.AreEqual(8, path.Count);
+        }
+
+        [TestMethod]
         public void Test_WithClosedWall_NoPath()
         {
             AddWallWithoutGap();
 
+            var searchParameters2D = new SearchParameters2D(new Point(1, 2), new Point(5, 2), map);
             var pathfinder = new AStarFinder();
 
             var path = pathfinder.FindPath(searchParameters2D);

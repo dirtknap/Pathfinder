@@ -43,11 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commons\Utils.cs" />
+    <Compile Include="DisplayRenderer.cs" />
+    <Compile Include="Examples\AStarMaze.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\PathfinderSharpX\PathfinderSharpX.csproj">
+      <Project>{b69f4be3-9936-4013-8263-479e4d3f6ecc}</Project>
+      <Name>PathfinderSharpX</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

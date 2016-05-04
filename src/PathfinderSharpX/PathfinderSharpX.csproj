@@ -39,10 +39,14 @@
   <ItemGroup>
     <Compile Include="AStar\AStarFinder.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="Commons\SearchMap2D.cs" />
     <Compile Include="Commons\Node2D.cs" />
     <Compile Include="Commons\Point.cs" />
     <Compile Include="Commons\SearchParameters2D.cs" />
+    <Compile Include="Commons\Utils.cs" />
+    <Compile Include="JPS\JPSFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\NodeOperations.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
