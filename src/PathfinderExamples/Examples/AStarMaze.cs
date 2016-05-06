@@ -12,7 +12,7 @@ namespace PathfinderExamples.Examples
     class AStarMaze
     {
         private SearchParameters2D searchParameters;
-        private bool[,] map;
+        private SearchMap2D searchMap;
         private AStarFinder pathfinder;
         private Point start = new Point(3, 40);
         private Point destination = new Point(76, 40);
@@ -27,7 +27,7 @@ namespace PathfinderExamples.Examples
         {
             pathfinder.TestMode = true;
             searchParameters.UseDiagonals = true;
-            var result = pathfinder.FindPath(searchParameters);
+            var result = pathfinder.FindPath(searchParameters, searchMap);
             var testedNodes = pathfinder.AllNodesTested;
             return ConvertMapToResult(result, testedNodes);
         }
@@ -35,24 +35,26 @@ namespace PathfinderExamples.Examples
         private void InitializeMaze()
         {
             CreateMap();
-            searchParameters = new SearchParameters2D(start, destination, map);
+            searchMap.SetDestination(destination);
+            searchParameters = new SearchParameters2D(start, destination);
         }
 
         private void CreateMap()
         {
-            map = new bool[80, 80];
+            var map = new bool[80, 80];
             var random = new Random();
             map = Utils.ModifyMap(map, (x, y) => random.Next(0,100) > 30);
             map[start.X, start.Y] = true;
             map[destination.X, destination.Y] = true;
-
+            
+            searchMap = new SearchMap2D(map);
         }
 
         private int[,] ConvertMapToResult(List<Point> path, List<Point> testedNodes )
         {
-            var result = new int[map.GetLength(0), map.GetLength(1)];
+            var result = new int[searchMap.Width, searchMap.Height];
 
-            result = Utils.ModifyMap(result, (x, y) => map[x, y] ? 0 : 1);
+            result = Utils.ModifyMap(result, (x, y) => searchMap.Map[x, y] ? 0 : 1);
 
             foreach (var node in testedNodes)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,38 +9,17 @@ namespace PathfinderSharpX.Commons
 {
     public class SearchParameters2D
     {
-        private Point endLocation;
+        public Point StartPoint { get; set; }
 
-        public Point StartLocation { get; set; }
-
-        public Point EndLocation {
-            get { return endLocation; }
-            set
-            {
-                endLocation = value;
-                SearchMap.SetDestination(value);
-            }
-        }
-
-        public SearchMap2D SearchMap { get; }
-
-        public Node2D StartNode { get { return SearchMap.Nodes[StartLocation.X, StartLocation.Y]; } }
-
-        public Node2D EndNode { get { return SearchMap.Nodes[endLocation.X, endLocation.Y]; } }
+        public Point EndPoint { get; set; }
 
         public bool UseDiagonals { get; set; }
 
-        public bool DiagonalCornersBlock { get; set; }
-
-        public SearchParameters2D(Point startLocation, Point endLocation, bool[,] map, bool useDiagonal = false, bool diagonalsBlockCorners = true)
+        public SearchParameters2D(Point startPoint, Point endPoint, bool useDiagonal = false)
         {
-            SearchMap = new SearchMap2D(map);
-            StartLocation = startLocation;
-            EndLocation = endLocation;
+            StartPoint = startPoint;
+            EndPoint = endPoint;
             UseDiagonals = useDiagonal;
-            DiagonalCornersBlock = true;       
         }
-
-
     }
 }

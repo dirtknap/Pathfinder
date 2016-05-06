@@ -16,9 +16,29 @@ namespace PathfinderSharpX.Commons
             InitializeNodes();
         }
 
+        public Node2D GetNode(Point point)
+        {
+            return Nodes[point.X, point.Y];
+        }
+
+        public bool IsPointTraversable(Point point)
+        {
+            return Map[point.X, point.Y];
+        }
+
+        public bool IsBlocked(Point origin, Direction direction)
+        {
+            return IsPointTraversable(origin.NextPoint(direction));
+        }
+
+        public bool IsValidForcedNeighbor(Point point, Direction heading, Direction neighbor)
+        {
+            return IsBlocked(point, neighbor) && !IsBlocked(point.NextPoint(neighbor), heading) && !IsBlocked(point, heading);
+        }
+
         public void SetDestination(Point destination)
         {
-            Nodes = Utils.ModifyMapInplace(Nodes, (x, y) => {
+            Nodes = Utils.Helpers.ModifyMapInplace(Nodes, (x, y) => {
                 Nodes[x, y].SetEndPoint(destination);
                 Nodes[x,y].State = NodeState.Untested;
                 });
@@ -26,7 +46,7 @@ namespace PathfinderSharpX.Commons
 
         public void UpdateMap(bool[,] map)
         {
-            Nodes = Utils.ModifyMapInplace(Nodes, (x, y) =>
+            Nodes = Utils.Helpers.ModifyMapInplace(Nodes, (x, y) =>
             {
                 Nodes[x, y].IsTraversable = map[x, y];
                 Nodes[x,y].State = NodeState.Untested;
@@ -37,7 +57,7 @@ namespace PathfinderSharpX.Commons
         {
             Nodes = new Node2D[Width, Height];
 
-            Nodes = Utils.ModifyMap(Nodes, (x, y) => new Node2D(x, y, Map[x,y], new Point()));
+            Nodes = Utils.Helpers.ModifyMap(Nodes, (x, y) => new Node2D(x, y, Map[x,y], new Point()));
         }
     }
 }

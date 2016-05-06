@@ -10,13 +10,13 @@ namespace PathfinderSharpX.Utils
     internal static class NodeOperations
     {
 
-        internal static List<Node2D> GetAdjacentTraverableNodes(Node2D fromNode, SearchParameters2D searchParameters)
+        internal static List<Node2D> GetAdjacentTraverableNodes(Node2D fromNode, SearchMap2D searchMap, bool useDiagonals)
         {
             var walkableNodes = new List<Node2D>();
-            var width = searchParameters.SearchMap.Width;
-            var height = searchParameters.SearchMap.Height;
+            var width = searchMap.Width;
+            var height = searchMap.Height;
 
-            var nextLocations = GetAdjacentNodes(fromNode.Location, searchParameters);
+            var nextLocations = GetAdjacentNodes(fromNode.Location, searchMap, useDiagonals);
 
             foreach (var location in nextLocations)
             {
@@ -25,7 +25,7 @@ namespace PathfinderSharpX.Utils
 
                 if (x < 0 || x >= width || y < 0 || y >= height) continue;
 
-                var node = searchParameters.SearchMap.Nodes[x, y];
+                var node = searchMap.Nodes[x, y];
 
                 if (!node.IsTraversable || node.State == NodeState.Closed) continue;
 
@@ -50,30 +50,27 @@ namespace PathfinderSharpX.Utils
             return walkableNodes;
         }
 
-        internal static IEnumerable<Point> GetAdjacentNodes(Point node, SearchParameters2D searchParameters)
+        internal static IEnumerable<Point> GetAdjacentNodes(Point node, SearchMap2D searchMap, bool useDiagonals)
         {
             //  5 1 6
             //  0 □ 2
             //  4 3 7
 
-            var result = new Point[(searchParameters.UseDiagonals ? 8 : 4)];
+            var result = new Point[(useDiagonals ? 8 : 4)];
 
             result[0] = new Point(node.X - 1, node.Y);
             result[1] = new Point(node.X, node.Y - 1);
             result[2] = new Point(node.X + 1, node.Y);
             result[3] = new Point(node.X, node.Y + 1);
 
-            if (searchParameters.UseDiagonals)
+            if (useDiagonals)
             {
                 result[4] = new Point(node.X - 1, node.Y + 1);
                 result[5] = new Point(node.X - 1, node.Y - 1);
                 result[6] = new Point(node.X + 1, node.Y - 1);
                 result[7] = new Point(node.X + 1, node.Y + 1);
 
-                if (searchParameters.DiagonalCornersBlock)
-                {
-                    return CheckForPinchPoint(result, searchParameters.SearchMap.Map);
-                }
+                return CheckForPinchPoint(result, searchMap.Map);
             }
 
             return result;

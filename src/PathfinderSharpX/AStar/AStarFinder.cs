@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using PathfinderSharpX.Commons;
+using PathfinderSharpX.Interfaces;
 using PathfinderSharpX.Utils;
 
 namespace PathfinderSharpX.AStar
 {
-    public class AStarFinder
+    public class AStarFinder : IPathfinder2D
     {
         private Node2D startNode;
         private Node2D endNode;
@@ -21,15 +22,15 @@ namespace PathfinderSharpX.AStar
         }
 
 
-        public List<Point> FindPath(SearchParameters2D searchParameters)
+        public List<Point> FindPath(SearchParameters2D searchParameters, SearchMap2D map)
         {
-            startNode = searchParameters.StartNode;
+            startNode = map.GetNode(searchParameters.StartPoint);
             startNode.State = NodeState.Open;
-            endNode = searchParameters.EndNode;
+            endNode = map.GetNode(searchParameters.EndPoint);
 
             var path = new List<Point>();
 
-            var success = Search(startNode, searchParameters);
+            var success = Search(startNode, searchParameters, map);
             if (success)
             {
                 var node = endNode;
@@ -44,10 +45,10 @@ namespace PathfinderSharpX.AStar
             return path;
         } 
 
-        private bool Search(Node2D currentNode, SearchParameters2D searchParameters)
+        private bool Search(Node2D currentNode, SearchParameters2D searchParameters, SearchMap2D map)
         {
             currentNode.State = NodeState.Closed;
-            var nextNodes = NodeOperations.GetAdjacentTraverableNodes(currentNode, searchParameters);
+            var nextNodes = NodeOperations.GetAdjacentTraverableNodes(currentNode, map, searchParameters.UseDiagonals);
             nextNodes.Sort((n1, n2) => n1.F.CompareTo(n2.F));
             foreach (var nextNode in nextNodes)
             {
@@ -58,7 +59,7 @@ namespace PathfinderSharpX.AStar
                     AllNodesTested.Add(new Point(nextNode.Location.X, nextNode.Location.Y));
                 }
 
-                if (Search(nextNode, searchParameters)) return true;
+                if (Search(nextNode, searchParameters, map)) return true;
             }
 
             return false;
