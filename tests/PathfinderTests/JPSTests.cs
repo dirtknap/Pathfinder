@@ -19,12 +19,14 @@ namespace PathfinderTests
         {
             //  □ □ □ □ □ □ □
             //  □ □ □ □ □ □ □
+            //  □ □ □ □ □ □ □
             //  □ S □ □ □ F □
             //  □ □ □ □ □ □ □
             //  □ □ □ □ □ □ □
+            //  □ □ □ □ □ □ □
 
-            map = new bool[7, 5];
-            for (int y = 0; y < 5; y++)
+            map = new bool[7, 7];
+            for (int y = 0; y < 7; y++)
             {
                 for (int x = 0; x < 7; x++)
                 {
@@ -32,8 +34,8 @@ namespace PathfinderTests
                 }
             }
 
-            start = new Point(1, 2);
-            destination = new Point(5, 2);
+            start = new Point(1, 3);
+            destination = new Point(5, 3);
             searchParameters2D = new SearchParameters2D(start, destination);
         }
 
@@ -41,17 +43,21 @@ namespace PathfinderTests
         {
             //  □ □ □ ■ □ □ □
             //  □ □ □ ■ □ □ □
+            //  □ □ □ ■ □ □ □
             //  □ S □ ■ □ F □
+            //  □ □ □ ■ □ □ □ 
             //  □ □ □ ■ ■ □ □
             //  □ □ □ □ □ □ □
 
             // Path: 1,2 ; 2,1 ; 3,0 ; 4,0 ; 5,1 ; 5,2
 
-            map[3, 4] = false;
-            map[3, 3] = false;
-            map[3, 2] = false;
+            map[3, 0] = false;
             map[3, 1] = false;
-            map[4, 1] = false;
+            map[3, 2] = false;
+            map[3, 3] = false;
+            map[3, 4] = false;
+            map[3, 5] = false;
+            map[4, 5] = false;
         }
 
 
@@ -59,17 +65,54 @@ namespace PathfinderTests
         {
             //  □ □ □ ■ □ □ □
             //  □ □ □ ■ □ □ □
+            //  □ □ □ ■ □ □ □
             //  □ S □ ■ □ F □
+            //  □ □ □ ■ □ □ □
             //  □ □ □ ■ □ □ □
             //  □ □ □ ■ □ □ □
 
             // No path
 
+            map[3, 6] = false;
+            map[3, 5] = false;
             map[3, 4] = false;
             map[3, 3] = false;
             map[3, 2] = false;
             map[3, 1] = false;
             map[3, 0] = false;
+        }
+
+        private void AddJumpPointBlocks()
+        {
+            //  □ □ □ □ □ □ □
+            //  □ □ □ □ ■ □ □
+            //  □ ■ □ □ □ □ □
+            //  □ □ □ S □ □ □
+            //  □ □ □ □ □ ■ □
+            //  □ □ ■ □ □ □ □
+            //  □ □ □ □ □ □ □
+
+            map[4, 1] = false;
+            map[1, 2] = false;
+            map[5, 4] = false;
+            map[2, 5] = false;
+        }
+
+        [TestMethod]
+        public void Test_JumpPoints()
+        {
+            var pathfinder = new JPSFinder();
+            
+            AddJumpPointBlocks();
+
+            var  searchMap = new SearchMap2D(map);
+            searchParameters2D.StartPoint = new Point(3,3);
+
+            var jumpPoints = pathfinder.TestJumpPoints(searchParameters2D, searchMap);
+
+            Assert.IsNotNull(jumpPoints);
+            Assert.IsTrue(jumpPoints.Any());
+
         }
 
         [TestMethod]

@@ -48,11 +48,11 @@ namespace PathfinderTests
 
             // Path: 1,2 ; 2,1 ; 3,0 ; 4,0 ; 5,1 ; 5,2
 
-            map[3, 4] = false;
-            map[3, 3] = false;
-            map[3, 2] = false;
+            map[3, 0] = false;
             map[3, 1] = false;
-            map[4, 1] = false;
+            map[3, 2] = false;
+            map[3, 3] = false;
+            map[4, 3] = false;
         }
 
 

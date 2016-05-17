@@ -23,18 +23,44 @@ namespace PathfinderSharpX.Commons
 
         public bool IsPointTraversable(Point point)
         {
+            if (point.X < 0 || point.X >= Width - 1 || point.Y < 0 || point.Y >= Width - 1)
+            {
+                return false;
+            }
             return Map[point.X, point.Y];
         }
 
         public bool IsBlocked(Point origin, Direction direction)
         {
-            return IsPointTraversable(origin.NextPoint(direction));
+            if (origin.X < 0 || origin.X >= Width - 1 || origin.Y < 0 || origin.Y >= Width - 1)
+            {
+                return true;
+            }
+            return !IsPointTraversable(origin.NextPoint(direction));
         }
 
-        public bool IsValidForcedNeighbor(Point point, Direction heading, Direction neighbor)
+        public bool IsBlockedByPinch(Point origin, Direction direction)
         {
-            return IsBlocked(point, neighbor) && !IsBlocked(point.NextPoint(neighbor), heading) && !IsBlocked(point, heading);
+            switch (direction)
+            {
+                case Direction.NorthEast:
+                    return IsBlocked(origin, Direction.North) && IsBlocked(origin, Direction.East);
+                case Direction.NorthWest:
+                    return IsBlocked(origin, Direction.North) && IsBlocked(origin, Direction.West);
+                case Direction.SouthEast:
+                    return IsBlocked(origin, Direction.South) && IsBlocked(origin, Direction.East);
+                case Direction.SouthWest:
+                    return IsBlocked(origin, Direction.South) && IsBlocked(origin, Direction.West);
+                default:
+                    return false;
+            }
         }
+
+        public bool IsValidNeighbor(Point point, Direction heading, Direction neighbor)
+        {
+            return IsBlocked(point, neighbor) && !IsBlocked(point, heading) && !IsBlocked(point.NextPoint(heading), neighbor);
+        }
+
 
         public void SetDestination(Point destination)
         {
